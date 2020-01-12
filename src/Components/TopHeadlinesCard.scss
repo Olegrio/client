@@ -1,0 +1,21 @@
+.pagination {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .pagination-item {
+        cursor: pointer;
+        border: 1px solid #3e51b5;
+        COLOR: #3e51b5;
+        width: 26px;
+        height: 26px;
+        margin: 4px;
+        line-height: 24px;
+        border-radius: 26px;
+        text-align: center;
+    }
+    .active {
+        background: #3e51b5;
+        color: white;
+    }
+}
