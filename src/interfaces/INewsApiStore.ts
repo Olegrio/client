@@ -26,13 +26,7 @@ export interface INewsApiStore {
     loadSources(): Promise<void>;
     selectHeadlines: (data: ITopHeadlines) => void;
     readonly loadTopHeadlines: (data: ITopHeadlines[]) => void;
-    readonly searchTopHeadlines: (
-        country: string, 
-        category: string, 
-        q: string, 
-        sources: string, 
-        topHeadlines: ISimpleValueStore<ITopHeadlines[] | null>,
-        reaction: (number: number | null) => void) => Promise<void>
+    readonly searchTopHeadlines: () => Promise<void>
     checkCountrys(data: string): void;
     checkCategory(data: string): void;
     openPage: (number: number | null) => void;

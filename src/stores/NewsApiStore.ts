@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { observable, runInAction, action, toJS, reaction } from "mobx";
 import { NewsApiServices } from "../services/NewsApiServices";
-import { ICountrys, ISources, ICategorys, ITopHeadlines, ISimpleValueStore, INewsApiStore, IActiveView, ILanguageValue, ILanguage, ISortBy } from "../interfaces";
+import { ICountrys, ISources, ICategorys, ITopHeadlines, INewsApiStore, IActiveView, ILanguage, ISortBy } from "../interfaces";
 import { COUNTRYS } from "../assets/counrts-iso-3166";
 import { CATEGORYS } from "../assets/categorys";
 import { LANGUAGE } from "../assets/language";
@@ -9,10 +9,9 @@ import { SimpleValueStore } from "./SimpleValueStore";
 
 @injectable()
 export class NewsApiStore implements INewsApiStore { 
-
 /** */
-    public dateFrom = new SimpleValueStore<Date>(new Date);
-    public dateTo = new SimpleValueStore<Date>(new Date);
+    public dateFrom = new SimpleValueStore<Date>(new Date());
+    public dateTo = new SimpleValueStore<Date>(new Date());
     public qInTitle = new SimpleValueStore<string | null>(null);
     public domains = new SimpleValueStore<string | null>(null);
     public language = new SimpleValueStore<ILanguage[] | null>(LANGUAGE);
@@ -54,14 +53,7 @@ export class NewsApiStore implements INewsApiStore {
     public constructor() {
         this.loadSources();
         this.localStorageParser();
-        this.searchTopHeadlines(
-            String(this.selectedCountrys.value),
-            String(this.selectedCategorys.value), 
-            this.searchLine.value, 
-            String(this.selectedSources), 
-            this.topHeadlines,
-            this.openPage)
-
+        this.searchTopHeadlines();
         reaction(() => this.selectedCountrys.value, () => localStorage.setItem('selectedCountrys', this.selectedCountrys.value));
         reaction(() => this.selectedCategorys.value, () => localStorage.setItem('selectedCategorys', this.selectedCategorys.value));
         reaction(() => this.searchLine.value, () => localStorage.setItem('searchLine', this.searchLine.value));
@@ -105,29 +97,20 @@ export class NewsApiStore implements INewsApiStore {
     public loadTopHeadlines(data: ITopHeadlines[]){
         this.topHeadlines.setValue(data);
     }
-
     @action
-    public async searchTopHeadlines(
-        country: string, 
-        category: string, 
-        q: string, 
-        sources: string, 
-        topHeadlines: ISimpleValueStore<ITopHeadlines[] | null>,
-        reaction: (number: number | null) => void)
-        : Promise<void> 
-        {
-        reaction(1);
-        const countryObj = COUNTRYS.find(data => data.name === country) as ICountrys;
-        const categoryObj = CATEGORYS.find(data => data.name_rus === category) as ICategorys;
+    public async searchTopHeadlines(): Promise<void> {
+        this.openPage(1);
+        const countryObj = COUNTRYS.find(data => data.name === String(this.selectedCountrys)) as ICountrys;
+        const categoryObj = CATEGORYS.find(data => data.name_rus === String(this.selectedCategorys)) as ICategorys;
         const params = {
             country: countryObj.alpha_2,
             category: categoryObj.name_eng,
-            q: q,
-            sources: sources
+            q: this.searchLine.value,
+            sources: String(this.selectedSources)
         };
         const v = await new NewsApiServices('http://127.0.0.1:3002').startSearch(params);
-        reaction(v.articles.length ? 1 : null);
-        runInAction(() => topHeadlines.setValue(toJS(v.articles)));
+        this.openPage(v.articles.length ? 1 : null);
+        runInAction(() => this.topHeadlines.setValue(toJS(v.articles)));
     }
     
     @action

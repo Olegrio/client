@@ -5,29 +5,18 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
 
-import FlagIcon from '@material-ui/icons/Flag';
-import CategoryIcon from '@material-ui/icons/Category';
-import FindInPageIcon from '@material-ui/icons/FindInPage';
-import SearchIcon from '@material-ui/icons/Search';
-
-import { ListItemIcon } from "@material-ui/core";
-import { Countrys } from "../Components/Countrys";
-import { Categorys } from "../Components/Categorys";
-import { SearchLineComponent } from "../Components/SearchLine";
-import { SearchButton } from "../Components/SearchButton";
 import { IActiveView, ISimpleValueStore } from "../interfaces";
 import { ViewToggle } from "../Components/ViewToggle";
-
+import { TopHeadlines } from "../Components/Containers/TopHeadlines";
+import { Everything } from "../Components/Containers/Everything";
 
 const drawerWidth = 340;
 
@@ -156,32 +145,11 @@ export default function MiniDrawer(props: IProps) {
                     </IconButton>
                 </div>
                 <Divider />
-                <List>
-                    <ListItem button key={'countrys'}>
-                        <ListItemIcon>
-                            <FlagIcon color='disabled' />
-                        </ListItemIcon>
-                        <Countrys />
-                    </ListItem>
-                    <ListItem button key={'categorys'}>
-                        <ListItemIcon>
-                            <CategoryIcon color='disabled' />
-                        </ListItemIcon>
-                        <Categorys />
-                    </ListItem>
-                    <ListItem button key={'keyPhrase'}>
-                        <ListItemIcon>
-                            <FindInPageIcon color='disabled' />
-                        </ListItemIcon>
-                        <SearchLineComponent />
-                    </ListItem>
-                    <ListItem button key={'startSearch'}>
-                        <ListItemIcon>
-                            <SearchIcon color='disabled' />
-                        </ListItemIcon>
-                        <SearchButton />
-                    </ListItem>
-                </List>
+                {
+                    props.activeView.value === IActiveView.topHeadlines
+                        ?  <TopHeadlines />
+                        :  <Everything />
+                }
                 <Divider />
             </Drawer>
             <main className={classes.content}>

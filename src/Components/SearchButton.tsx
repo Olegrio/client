@@ -44,20 +44,14 @@ interface ISearchButton {
 @inject(stores => stores)
 @observer
 export class SearchButton extends React.PureComponent<ISearchButton> {
-
-    render() {
-        const { searchTopHeadlines, selectedCountrys, selectedCategorys, topHeadlines, searchLine, selectedSources, openPage } = this.props.context!.store;
+    onCLick() {
+        const { searchTopHeadlines } = this.props.context!.store;
+        searchTopHeadlines()
+    }
+    render() {      
         return (
             <div>
-                <Search handler= {
-                    () => searchTopHeadlines(
-                        String(selectedCountrys.value), 
-                        String(selectedCategorys.value), 
-                        searchLine.value, 
-                        String(selectedSources), 
-                        topHeadlines,
-                        openPage)
-                }/>
+                <Search handler= {() => this.onCLick()}/>
             </div>
         );
     }
