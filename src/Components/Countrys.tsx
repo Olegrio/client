@@ -9,7 +9,8 @@ import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
-import { ICountrys, INewsApiStore } from "../interfaces";
+import { ICountrys } from "../interfaces";
+import { NewsApiStore } from "../stores/NewsApiStore";
 
 
 
@@ -84,7 +85,7 @@ function MultipleSelectCountrys(props: IProps) {
 
 
 interface ICountrysComponent {
-    context?: { store: INewsApiStore };
+    context?: { store: NewsApiStore };
 }
 
 @inject(stores => stores)

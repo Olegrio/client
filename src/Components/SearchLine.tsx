@@ -3,7 +3,8 @@ import { inject, observer } from "mobx-react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { ISimpleValueStore, INewsApiStore } from "../interfaces";
+import { ISimpleValueStore } from "../interfaces";
+import { NewsApiStore } from "../stores/NewsApiStore";
 
 interface IProps {
     line: ISimpleValueStore<string>;
@@ -33,7 +34,7 @@ export default function SearchLine(props: IProps) {
     );
 }
 interface ISearchLineComponent {
-    context?: { store: INewsApiStore };
+    context?: { store: NewsApiStore };
 }
 
 @inject(stores => stores)

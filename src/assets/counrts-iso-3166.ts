@@ -76,10 +76,6 @@ export const COUNTRYS = [
         alpha_2: "MY"
     },
     {
-        name: "Latvia",
-        alpha_2: "LV"
-    },
-    {
         name: "Serbia",
         alpha_2: "RS"
     },

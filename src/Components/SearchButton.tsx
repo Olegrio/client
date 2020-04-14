@@ -5,7 +5,7 @@ import Fab from '@material-ui/core/Fab';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { INewsApiStore } from "../interfaces";
+import { NewsApiStore } from "../stores/NewsApiStore";
 
 const useStyles = makeStyles(theme => ({
     button: {
@@ -38,15 +38,15 @@ export default function Search(props: IProps) {
     );
 }
 interface ISearchButton {
-    context?: { store: INewsApiStore };
+    context?: { store: NewsApiStore };
 }
 
 @inject(stores => stores)
 @observer
 export class SearchButton extends React.PureComponent<ISearchButton> {
     onCLick() {
-        const { searchTopHeadlines } = this.props.context!.store;
-        searchTopHeadlines()
+        const { loadTopHeadlines } = this.props.context!.store;
+        loadTopHeadlines()
     }
     render() {      
         return (

@@ -9,7 +9,8 @@ import FormControl from '@material-ui/core/FormControl';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
-import { ICategorys, INewsApiStore } from "../interfaces";
+import { ICategorys } from "../interfaces";
+import { NewsApiStore } from "../stores/NewsApiStore";
 
 interface IProps {
     categorys: ICategorys[];
@@ -71,7 +72,7 @@ function SelectCategorys(props: IProps) {
 
 
 interface ICategorysComponent {
-    context?: { store: INewsApiStore };
+    context?: { store: NewsApiStore };
 }
 
 @inject(stores => stores)

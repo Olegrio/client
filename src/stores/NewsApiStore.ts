@@ -1,14 +1,14 @@
 import { injectable } from "inversify";
 import { observable, runInAction, action, toJS, reaction } from "mobx";
 import { NewsApiServices } from "../services/NewsApiServices";
-import { ICountrys, ISources, ICategorys, ITopHeadlines, INewsApiStore, IActiveView, ILanguage, ISortBy } from "../interfaces";
+import { ICountrys, ISources, ICategorys, TopHeadlinesInterface, IActiveView, ILanguage, ISortBy, FullNewsInterface } from "../interfaces";
 import { COUNTRYS } from "../assets/counrts-iso-3166";
 import { CATEGORYS } from "../assets/categorys";
 import { LANGUAGE } from "../assets/language";
 import { SimpleValueStore } from "./SimpleValueStore";
 
 @injectable()
-export class NewsApiStore implements INewsApiStore { 
+export class NewsApiStore { 
 /** */
     public dateFrom = new SimpleValueStore<Date>(new Date());
     public dateTo = new SimpleValueStore<Date>(new Date());
@@ -36,26 +36,35 @@ export class NewsApiStore implements INewsApiStore {
     public pageFinishItem = new SimpleValueStore<number>(9);
 
 /** */
+    @observable
     public countrys: ICountrys[] = COUNTRYS;
+
+    @observable
     public selectedCountrys = new SimpleValueStore<string>('Russian Federation');
 
 /** */
+    @observable
     public categorys: ICategorys[] = CATEGORYS;
+    @observable
     public selectedCategorys = new SimpleValueStore<string>('Главные');
 
 /** */
     public searchLine = new SimpleValueStore<string>('');
 
 /** */
-    public topHeadlines = new SimpleValueStore<ITopHeadlines[] | null>(null);
-    public selectedHeadlines = new SimpleValueStore<ITopHeadlines | null>(null);
+    public topHeadlines = new SimpleValueStore<TopHeadlinesInterface[] | null>(null);
+    public fullNews = new SimpleValueStore<FullNewsInterface | null>(null);
+    public selectedHeadlines = new SimpleValueStore<TopHeadlinesInterface | null>(null);
 
     public constructor() {
+        (<any>window).__COUNTRYS__ = this.countrys;
+        (<any>window).__CATEGORYS__ = this.categorys;
         this.loadSources();
         this.localStorageParser();
-        this.searchTopHeadlines();
+        this.loadTopHeadlines();
         reaction(() => this.selectedCountrys.value, () => localStorage.setItem('selectedCountrys', this.selectedCountrys.value));
         reaction(() => this.selectedCategorys.value, () => localStorage.setItem('selectedCategorys', this.selectedCategorys.value));
+        
         reaction(() => this.searchLine.value, () => localStorage.setItem('searchLine', this.searchLine.value));
         reaction(() => this.searchLine.value, () => localStorage.setItem('searchLine', this.searchLine.value));
         reaction(() => this.activePage.value, 
@@ -73,7 +82,7 @@ export class NewsApiStore implements INewsApiStore {
     }
 
     @action
-    public selectHeadlines = (data: ITopHeadlines) => {
+    public selectHeadlines = (data: TopHeadlinesInterface) => {
         this.selectedHeadlines.setValue(data);
     }
 
@@ -94,30 +103,42 @@ export class NewsApiStore implements INewsApiStore {
     }
 
     @action
-    public loadTopHeadlines(data: ITopHeadlines[]){
-        this.topHeadlines.setValue(data);
+    public loadTopHeadlines(){
+        this.searchTopHeadlines();
     }
+
     @action
     public async searchTopHeadlines(): Promise<void> {
-        this.openPage(1);
-        const countryObj = COUNTRYS.find(data => data.name === String(this.selectedCountrys)) as ICountrys;
-        const categoryObj = CATEGORYS.find(data => data.name_rus === String(this.selectedCategorys)) as ICategorys;
+
+        const countryObj = this.countrys.find(data => data.name === this.selectedCountrys.value) as ICountrys;
+        const categoryObj = this.categorys.find(data => data.name_rus === this.selectedCategorys.value) as ICategorys;
+        
         const params = {
             country: countryObj.alpha_2,
             category: categoryObj.name_eng,
             q: this.searchLine.value,
             sources: String(this.selectedSources)
         };
-        const v = await new NewsApiServices('http://127.0.0.1:3002').startSearch(params);
+        const v = await new NewsApiServices('http://127.0.0.1:3002').startSearchHeadlines(params);
         this.openPage(v.articles.length ? 1 : null);
         runInAction(() => this.topHeadlines.setValue(toJS(v.articles)));
     }
     
     @action
+    public async searchFullNews(): Promise<void> {
+        this.openPage(1);
+        const params = {
+            q: this.searchLine.value
+        };
+        const v = await new NewsApiServices('http://127.0.0.1:3002').startSearchFullNews(params);
+        this.openPage(v.articles.length ? 1 : null);
+        runInAction(() => this.fullNews.setValue(toJS(v.articles)));
+    }
+
+    @action
     public async loadSources(): Promise<void> {
         const v = await new NewsApiServices('http://127.0.0.1:3002').getSources();
         runInAction(() => this.sources = toJS(v));
     }
-
 
 }

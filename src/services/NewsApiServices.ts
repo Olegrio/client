@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ISearchParams } from '../interfaces';
+import { ISearchHeadlinesParams, ISearcFullNewshParams } from '../interfaces';
 
 export interface IResponse { 
 
@@ -7,7 +7,7 @@ export interface IResponse {
 
 export interface INewsApiServices {
     getSources(): Promise<any>;
-    startSearch(params: ISearchParams): Promise<any>;
+    startSearchHeadlines(params: ISearchHeadlinesParams): Promise<any>;
 }
 
 export class NewsApiServices implements INewsApiServices {
@@ -22,8 +22,13 @@ export class NewsApiServices implements INewsApiServices {
         return result.data.sources;
     }
 
-    public async startSearch(params: ISearchParams): Promise<any> {
+    public async startSearchHeadlines(params: ISearchHeadlinesParams): Promise<any> {
         const result = await this._api.post<any>(`news/search`, params);
+        return result.data;
+    }
+
+    public async startSearchFullNews(params: ISearcFullNewshParams): Promise<any> {
+        const result = await this._api.post<any>(`/news/search-e`, params);
         return result.data;
     }
 

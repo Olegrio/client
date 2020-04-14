@@ -7,7 +7,6 @@ export * from "./ICategorys";
 export * from "./ISources";
 export * from "./ISearchParams";
 export * from "./ITopHeadlines";
-export * from "./INewsApiStore";
 export * from "./IActiveView";
 export * from "./ILanguage";
 export * from "./ISortBy";

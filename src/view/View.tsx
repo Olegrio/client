@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { NewsApiStore } from '../stores/NewsApiStore';
 import { Provider } from "mobx-react";
 import "./View.scss";
-import { INewsApiStore, IActiveView } from "../interfaces";
+import { IActiveView } from "../interfaces";
 import { TopHeadlinesCards } from "../Components/TopHeadlinesCard";
 import MiniDrawer from "./MiniDrawer";
 
@@ -11,7 +11,7 @@ import MiniDrawer from "./MiniDrawer";
 @observer
 export class View extends React.PureComponent {
 
-    private readonly newsContext: { store: INewsApiStore } = {
+    private newsContext: { store: NewsApiStore } = {
         store: new NewsApiStore()
     };
 

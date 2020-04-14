@@ -1,5 +1,5 @@
 import React from "react";
-import { ITopHeadlines, INewsApiStore } from "../interfaces";
+import { TopHeadlinesInterface } from "../interfaces";
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -12,6 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { inject, observer } from "mobx-react";
 
 import "./TopHeadlinesCard.scss";
+import { NewsApiStore } from "../stores/NewsApiStore";
 
 const CopyToClipboard = require('react-copy-to-clipboard');
 const useStylesBootstrap = makeStyles(theme => ({
@@ -40,7 +41,7 @@ const useStyles = makeStyles({
 });
 
 interface IProps {
-    topHeadlines: ITopHeadlines;
+    topHeadlines: TopHeadlinesInterface;
 }
 
 export default function MediaCard(props: IProps) {
@@ -93,7 +94,7 @@ export default function MediaCard(props: IProps) {
 }
 
 interface ITopHeadlinesCard {
-    context?: { store: INewsApiStore };
+    context?: { store: NewsApiStore };
 }
 
 @inject(stores => stores)
